@@ -1,0 +1,23 @@
+pipelineJob('BuildPipeline') {
+  definition {
+    cps {
+      script("""
+node {
+git url:'https://github.com/vignesh020919997/final-project.git', branch:'main'
+sh 'pwd'
+sh'docker build -t alpine/latest .'
+sh('aws configure set aws_access_key_id AKIAZ4ET6RZOT7XMMAA4')
+sh('aws configure set aws_secret_access_key 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')
+sh('aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/k2z5q5p0')
+sh('docker tag alpine:3.5 public.ecr.aws/k2z5q5p0/vicky_repo:latest')
+sh('docker push public.ecr.aws/k2z5q5p0/vicky_repo:latest')
+sh('minikube delete')
+sh('minikube start')
+sh 'kubectl apply -f deployment.yaml'
+sh 'kubectl get pods'
+sh 'kubectl get nodes'
+}
+""")
+}
+}
+}
